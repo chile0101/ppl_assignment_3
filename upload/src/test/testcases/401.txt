@@ -1,1 +1,4 @@
-int foo; float foo(){}
+
+                   void main(int x, float y){
+                   }
+                

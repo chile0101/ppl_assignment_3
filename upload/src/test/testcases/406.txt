@@ -1,5 +1,6 @@
 
-        int callFunc(int x){}
-        float foo(){
-            x = true;
+        void main(){
+            x = 1;
+            int x;
         }
+        

@@ -40,6 +40,7 @@ class StaticChecker(BaseVisitor,Utils):
         Symbol("putStringLn", MType([StringType()], VoidType())),
         Symbol("putLn", MType([], VoidType()))
     ]
+    
             
     
     def __init__(self,ast):
@@ -64,6 +65,14 @@ class StaticChecker(BaseVisitor,Utils):
             print('>>>>> decl: ',i)
         res = reduce(lambda x,y: [self.visit(y,x+c)] + x,ast.decl,[])
 
+        findMain = self.lookup("main",res,lambda x:x.name)
+        if (findMain is None) or (not isinstance(findMain.mtype,MType)):
+            raise NoEntryPoint()
+        elif not isinstance(findMain.mtype.rettype,VoidType):
+            raise NoEntryPoint()
+        elif findMain.mtype.partype:
+            raise NoEntryPoint();
+
         return res
 
     def visitVarDecl(self, ast, c):
@@ -74,15 +83,18 @@ class StaticChecker(BaseVisitor,Utils):
     def visitFuncDecl(self,ast, c): 
         symFunc = Symbol(ast.name.name,MType([x.varType for x in ast.param],ast.returnType))
         self.checkRedeclared(symFunc, Function(), c)
-        listPara  = reduce(lambda x,y:x + [self.checkRedeclared(Symbol(y.variable,y.varType),Parameter(),x)],ast.param,[])
-        
-        listLocal = []
+        listParaOfFunc  = reduce(lambda x,y:x + [self.checkRedeclared(Symbol(y.variable,y.varType),Parameter(),x)],ast.param,[])
+    
+        listVarInBody = []
         for i in ast.body.member:
-            if type(i) is VarDecl:
-                listLocal = reduce(lambda x,y:x+ [self.checkRedeclared(Symbol(y.variable,y.varType),Variable(),x)],[i],listPara)     
-            #if type(i) is CallExpr:
-            else:   
-                self.visit(i,listLocal + c)
+            if(type(i) is VarDecl):
+                listVarInBody.append(i)
+                listVarInBlock = reduce(lambda x,y:x+ [self.checkRedeclared(Symbol(y.variable,y.varType),Variable(),x)],listVarInBody,listParaOfFunc)      
+            
+        for i in ast.body.member:
+            if( not type(i) is VarDecl):
+                self.visit(i,listVarInBlock + c)
+      
             
 
         return Symbol(ast.name.name,MType([x.varType for x in ast.param],ast.returnType))
@@ -91,6 +103,7 @@ class StaticChecker(BaseVisitor,Utils):
         left = self.visit(ast.left,c)
         right = self.visit(ast.right,c)
 
+    
         if (ast.op == "+" or ast.op == "-" or ast.op == "*" or ast.op == "/" ):
             if (isinstance(left,IntType)) and (isinstance(right,IntType)):
                 return IntType()
@@ -102,12 +115,12 @@ class StaticChecker(BaseVisitor,Utils):
                 return BoolType()
             raise TypeMismatchInExpression(ast)
         elif(ast.op == "==" or ast.op == "!="):
-            if (type(left) is IntType and type(right) is IntType) and (type(left) is BoolType and type(right) is BoolType):
+            if (type(left) is IntType and type(right) is IntType) or (type(left) is BoolType and type(right) is BoolType):
                 return BoolType()
             raise TypeMismatchInExpression(ast)
 
         elif (ast.op == "="):
-            if( type(left) is FloatType and type(right) is IntType or FloatType):
+            if( type(left) is FloatType and type(right) is IntType or type(left) is FloatType and type(right) is FloatType):
                 return FloatType()
             elif(type(left) is IntType and type(right) is IntType):
                 return IntType()
@@ -115,7 +128,8 @@ class StaticChecker(BaseVisitor,Utils):
                 return BoolType()
             elif(type(left) is StringType and type(right) is StringType):
                 return StringType()
-            raise TypeMismatchInExpression(ast)
+            else: 
+                raise TypeMismatchInExpression(ast)
         elif (ast.op == "&&" or ast.op == "||"):
             if(type(left) is BoolType and type(right) is BoolType):
                  return BoolType()
@@ -145,7 +159,7 @@ class StaticChecker(BaseVisitor,Utils):
     
         at = [self.visit(x,c) for x in ast.param]
         res = self.lookup(ast.method.name,c,lambda x:x.name)
-        print("resssssssssss",res)
+      
         if res is None: # miss check type
             raise Undeclared(Function(),ast.method.name)
         
@@ -155,7 +169,6 @@ class StaticChecker(BaseVisitor,Utils):
             return res.mtype.rettype
 
     def visitId(self,ast,c):
-        
         temp=self.lookup(ast.name,c,lambda x:x.name)
         if (temp is None) or type(temp.mtype) is MType:
             raise Undeclared(Identifier(),ast.name)
@@ -173,6 +186,9 @@ class StaticChecker(BaseVisitor,Utils):
 
 
     def visitIf(self,ast,c):
+        print('iffffffffffff',ast.expr)
+        self.printC(c)
         condition = self.visit(ast.expr,c)
+        print('conditionnnnn',condition)
         if not type(condition) is BoolType:
             raise TypeMismatchInStatement(ast)
