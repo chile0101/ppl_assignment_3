@@ -1,0 +1,7 @@
+
+        int push(int x){}
+        int foo(int x){
+    
+            push();
+        }
+        

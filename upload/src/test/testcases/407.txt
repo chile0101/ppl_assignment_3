@@ -1,0 +1,12 @@
+
+        int callFunc(int x){}
+        float foo(){
+            
+            float x;
+            x = 1;
+            x = 1.123;
+            1.1 = true;  // For require
+            1.1 = "str"
+
+            
+        }

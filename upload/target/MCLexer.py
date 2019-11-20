@@ -1,4 +1,4 @@
-# Generated from e:\PPL_FINAL\PPL_Assignment_3\upload\src\main\mc\parser\MC.g4 by ANTLR 4.7.1
+# Generated from main/mc/parser/MC.g4 by ANTLR 4.7.2
 from antlr4 import *
 from io import StringIO
 from typing.io import TextIO
@@ -6,6 +6,7 @@ import sys
 
 
 from lexererr import *
+
 
 
 def serializedATN():
@@ -271,7 +272,7 @@ class MCLexer(Lexer):
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7.1")
+        self.checkVersion("4.7.2")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None
@@ -304,6 +305,7 @@ class MCLexer(Lexer):
             action(localctx, actionIndex)
         else:
             raise Exception("No registered action for:" + str(ruleIndex))
+
 
     def STRINGLIT_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 0:

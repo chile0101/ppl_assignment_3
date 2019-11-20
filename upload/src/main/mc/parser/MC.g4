@@ -1,60 +1,145 @@
+/*
+    Name: Le Van Chi
+    MSSV: 1510289
+*/
+
 grammar MC;
 
 @lexer::header {
 from lexererr import *
 }
 
-@lexer::member {
+@lexer::members {
 def emit(self):
     tk = self.type
-    if tk == UNCLOSE_STRING:       
-        result = super.emit();
+    if tk == self.UNCLOSE_STRING:       
+        result = super().emit();
         raise UncloseString(result.text);
-    elif tk == ILLEGAL_ESCAPE:
-        result = super.emit();
+    elif tk == self.ILLEGAL_ESCAPE:
+        result = super().emit();
         raise IllegalEscape(result.text);
-    elif tk == ERROR_CHAR:
-        result = super.emit();
+    elif tk == self.ERROR_CHAR:
+        result = super().emit();
         raise ErrorToken(result.text); 
     else:
-        return super.emit();
+        return super().emit();
 }
 
 options{
 	language=Python3;
 }
 
-program  : mctype 'main' LB RB LP body? RP EOF ;
+program : decl+ EOF;
+decl : vardecl | funcdecl;
+vardecl : primtype varlist SEMI;
+varlist : var (COMMA var)*;
+var: ID (LS INTLIT RS)?;
+primtype : BOOLEANTYPE | INTTYPE | FLOATTYPE | STRINGTYPE ;
 
-mctype: INTTYPE | VOIDTYPE ;
+funcdecl: returntype ID LB paralist? RB blockstmt;
+returntype: primtype | VOIDTYPE | arrptrtype;
+arrptrtype : primtype LS RS;
+paralist: para (COMMA para)*;
+para: primtype ID (LS RS)?;
+//blockstmt: LP (vardecl | stmt)* RP; // ?
+blockstmt: LP vardecl_stmt* RP;
+vardecl_stmt: vardecl | stmt ;
 
-body: funcall SEMI;
 
-exp: funcall | INTLIT ;
+stmt: ifstmt | dowhilestmt | forstmt | breakstmt | contistmt | returnstmt | expstmt | blockstmt;
+ifstmt: IF LB exp RB stmt (ELSE stmt)?;
+dowhilestmt: DO stmt+ WHILE exp SEMI;
+forstmt:     FOR LB exp SEMI exp SEMI exp RB stmt;
 
-funcall: ID LB exp? RB ;
+breakstmt:   BREAK SEMI;
+contistmt:   CONTINUE SEMI;
+returnstmt:  RETURN exp? SEMI;
+expstmt:     exp SEMI;
 
-INTTYPE: 'int' ;
-
-VOIDTYPE: 'void'  ;
-
-ID: [a-zA-Z]+ ;
-
+exp : exp1 ASSIGN exp  | exp1;
+exp1: exp1 OROP exp2  | exp2;
+exp2: exp2 ANDOP exp3 | exp3;
+exp3: exp4 EQUALOP exp4 | exp4;
+exp4: exp5 COMPOP exp5 | exp5;
+exp5: exp5 (ADDOP | SUBOP) exp6 | exp6;
+exp6: exp6 (MULOP | DIVOP | MODOP) exp7 | exp7;
+exp7: (SUBOP | NEGOP) exp7 | exp8;    // ?
+exp8:   LB exp RB | literal | ID | funcall | elearray;
+//elearray: ID LS INTLIT RS;
+elearray: ( ID | funcall | literal) LS exp RS;
+funcall : ID LB (exp (COMMA exp)*)? RB;
+literal: INTLIT | FLOATLIT | BOOLEANLIT | STRINGLIT ;
 INTLIT: [0-9]+;
+FLOATLIT:  [0-9]+'.'[0-9]*([eE]'-'?[0-9]+)?
+        |  [0-9]*'.'[0-9]+([eE]'-'?[0-9]+)?
+        |  [0-9]+([eE]'-'?[0-9]+)?
+        ;
+BOOLEANLIT: TRUE | FALSE;
 
+STRINGLIT
+        : '"'(ESC | ~["\b\n\f\r\t\\])*'"'
+        {
+            self.text = self.text[1:-1]
+        }
+        ;
+fragment ESC : '\\'[bfrnt"\\];
+BLOCK_COMMENT: '/*' .*? '*/' -> skip;
+LINE_COMMENT: '//' ~[\r\n\f]* -> skip;
+
+BREAK: 'break';
+CONTINUE: 'continue';
+ELSE: 'else';
+FOR: 'for';
+IF: 'if';
+RETURN: 'return';
+DO: 'do';
+WHILE: 'while';
+TRUE : 'true';
+FALSE: 'false';
+
+BOOLEANTYPE: 'boolean';
+VOIDTYPE: 'void';
+INTTYPE: 'int';
+FLOATTYPE: 'float';
+STRINGTYPE: 'string';
+
+ID: [a-zA-Z_][a-zA-Z0-9_]*;
+
+ASSIGN: '=';
+OROP: '||';
+ANDOP: '&&';
+EQUALOP: '==' | '!=';
+COMPOP: '<'| '>'| '<='| '>=';
+ADDOP: '+';
+SUBOP: '-';
+MULOP: '*';
+DIVOP: '/';
+MODOP: '%';
+NEGOP: '!';
 LB: '(' ;
-
 RB: ')' ;
-
 LP: '{';
-
 RP: '}';
+LS: '[';
+RS: ']';
+SEMI: ';';
+COLON: ':';
+COMMA: ',';
 
-SEMI: ';' ;
-
-WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
+WS : [ \t\r\n]+ -> skip ;
 
 
 ERROR_CHAR: .;
-UNCLOSE_STRING: .;
-ILLEGAL_ESCAPE: .;
+
+UNCLOSE_STRING
+    : '"'(ESC | ~[\b\n\f\r\t\\"])*
+    {
+        self.text = self.text[1:]
+    }
+    ;
+ILLEGAL_ESCAPE
+    : '"'(ESC | ~[\b\n\f\r\t"])*'\\'.
+    {
+        self.text = self.text[1:]
+    }
+    ;

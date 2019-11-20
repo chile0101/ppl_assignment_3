@@ -1,1 +1,10 @@
-Program([FuncDecl(Id(main),[],IntType,Block([CallExpr(Id(foo),[])]))])
+
+        int x;
+        float foo(){
+            int x;
+        }
+        float foo1(){
+            int x;
+        }
+        int x;  // for require
+        
