@@ -1,0 +1,7 @@
+
+    
+        int callFunc(int x){}
+        float foo(){
+            int z;
+            callFunc(a);
+        }

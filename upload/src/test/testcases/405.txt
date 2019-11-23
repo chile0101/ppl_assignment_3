@@ -1,7 +1,7 @@
 
-        int callFunc(int x){}
-        int x;
-        float foo(){
-            int y;
-            callFunc(x,y,z);
-        }
+                   int getInt(){
+                   }
+                   void main(){
+
+                   }
+                

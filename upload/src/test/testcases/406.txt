@@ -1,6 +1,4 @@
 
-        void main(){
-            x = 1;
-            int x;
-        }
-        
+                int putString(){}
+                float putString;
+                

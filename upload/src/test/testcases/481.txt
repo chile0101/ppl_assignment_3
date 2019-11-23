@@ -1,0 +1,24 @@
+
+            int foo(int x){
+                int i; boolean bool;
+                i = 0;
+                bool = true;
+                for (i;i<10;i =  i+1){
+                    if(true){
+                        bool = false;
+                        break;
+                        return 1; 
+                    }
+                    break;
+                    return 1;
+                }
+                break;
+                return 1;
+            }
+            void main(){
+                int x;
+                x = 123;
+                foo(x);
+                return;
+            }
+        

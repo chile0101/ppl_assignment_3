@@ -1,1 +1,1 @@
-Type Mismatch In Expression: BinaryOp(/,BooleanLiteral(true),IntLiteral(12))
+Type Mismatch In Expression: BinaryOp(-,FloatLiteral(1.1),BooleanLiteral(true))

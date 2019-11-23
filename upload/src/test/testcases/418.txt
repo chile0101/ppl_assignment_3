@@ -1,0 +1,5 @@
+
+        int callFunc(int x){}
+        float foo(){
+            x = true;
+        }

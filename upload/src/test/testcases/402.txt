@@ -1,4 +1,6 @@
 
-                    int foo(){}
-                    float foo(){}
+                   int main(){
+                       x = 1;  // For error
+                   }
+
                 

@@ -1,0 +1,11 @@
+
+        
+            int foo(){
+            int n;
+            int sum;
+            sum = 123;
+            n = n%12;
+            n = sum%(1+1); // For error
+            n = sum%(1+1)/12.1; // For error
+        }
+        

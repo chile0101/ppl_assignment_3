@@ -1,0 +1,10 @@
+
+            void main(){
+                if(5<6){
+                    int foo;
+                }
+                else{
+                    foo();
+                }
+            }
+        

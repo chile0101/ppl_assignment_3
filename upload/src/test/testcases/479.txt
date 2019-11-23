@@ -1,0 +1,18 @@
+
+            int foo(int x){
+                int i;
+                i = 0;
+                for (i;i<10;i =  i+1){
+                    x = x + 1;
+                    break;
+                }
+                break;
+                return 1;
+            }
+            void main(){
+                int x;
+                x = 123;
+                foo(x);
+                return;
+            }
+        

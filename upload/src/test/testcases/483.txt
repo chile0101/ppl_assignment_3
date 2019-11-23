@@ -1,0 +1,12 @@
+
+            int foo(int x){
+                x = 2;
+                return x;
+            }
+            string bar(){
+                return "chile";
+            }
+            void main(){
+                return;
+            }
+        

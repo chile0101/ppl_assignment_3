@@ -1,0 +1,8 @@
+
+            boolean foo(string c,float e){
+                return e;
+            }
+            void main(){
+               
+            }
+        

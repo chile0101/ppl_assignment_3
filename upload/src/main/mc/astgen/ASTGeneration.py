@@ -99,7 +99,7 @@ class ASTGeneration(MCVisitor):
             elseStmt = self.visit(ctx.stmt(1))
             return If(expr,thenStmt,elseStmt)
         else:
-            return If(expr,thenStmt)
+            return If(expr,thenStmt,None)
 
     #dowhilestmt: DO stmt+ WHILE exp SEMI;
     def visitDowhilestmt(self,ctx:MCParser.DowhilestmtContext):
@@ -125,7 +125,7 @@ class ASTGeneration(MCVisitor):
 
     #returnstmt:  RETURN exp? SEMI;
     def visitReturnstmt(self,ctx:MCParser.ReturnstmtContext):
-        return Return(self.visit(ctx.exp())) if ctx.exp() else Return()
+        return Return(self.visit(ctx.exp())) if ctx.exp() else Return([])
 
     #expstmt: exp SEMI;
     def visitExpstmt(self,ctx:MCParser.ExpstmtContext):

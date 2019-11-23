@@ -1,0 +1,8 @@
+
+        
+        int foo(){
+            boolean x ;
+            x = true && true && false;
+            x = false && "true" ;
+        }
+        

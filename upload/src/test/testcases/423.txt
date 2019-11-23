@@ -1,0 +1,9 @@
+
+        int callFunc(int x){}
+        float foo(){
+            11 = 11;
+            12.3 = 12.3;
+            12.0 = 12;
+            1.2 = "string";
+            1 = 12.3
+        }

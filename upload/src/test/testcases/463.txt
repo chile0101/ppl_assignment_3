@@ -1,0 +1,8 @@
+
+            int foo(string c){
+                return c;
+            }
+            void main(){
+               foo("chi");
+            }
+        

@@ -1,0 +1,8 @@
+
+            int foo(string c,float e){
+                return e;
+            }
+            void main(){
+               foo("thien",1.5);
+            }
+        

@@ -1,0 +1,11 @@
+
+            int nobita1(){
+                return 5;
+            }
+            int sasuke(int a){
+                return sasuke(5);
+            }
+            void main(){
+                
+            }
+        

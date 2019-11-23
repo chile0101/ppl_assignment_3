@@ -1,0 +1,7 @@
+
+            void main(){
+               for(true;5>6;5){
+                   foo();
+               }
+            }
+        

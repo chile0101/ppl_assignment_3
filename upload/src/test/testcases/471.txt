@@ -1,0 +1,19 @@
+
+           
+            int foo(string str){
+                int x;
+                x = 0;
+                if(true){
+                    x = 1;
+                             // Missing return 
+                }else{
+                    x = 2;
+                    return 1;
+                }
+                return x;
+            }
+            void main(){
+               foo("chi");
+               return;
+            }
+        

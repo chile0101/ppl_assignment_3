@@ -1,0 +1,12 @@
+
+           
+            void foo(string str){
+                return ;
+            }
+            int foo1(){
+                return;
+            }
+            void main(){
+               return ;
+            }
+        

@@ -1,0 +1,10 @@
+
+        
+           int foo(){
+            int count;
+            boolean x ;
+            x = true || true || 1 == 1 || true == false || count + 1 == 12 ;
+            boolean z ;
+            z = 1 - 1 + 134 || "chi" == "chi" || true;
+        }
+        

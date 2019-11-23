@@ -40,7 +40,10 @@ class StaticChecker(BaseVisitor,Utils):
         Symbol("putStringLn", MType([StringType()], VoidType())),
         Symbol("putLn", MType([], VoidType()))
     ]
-    
+
+    curFunc = FuncDecl("",[],VoidType(),[])
+    funDeclaredNotCalled = []
+    ok = 0
             
     
     def __init__(self,ast):
@@ -61,6 +64,8 @@ class StaticChecker(BaseVisitor,Utils):
             return sym
 
     def visitProgram(self, ast, c): 
+        self.funDeclaredNotCalled = []
+
         for i in ast.decl:
             print('>>>>> decl: ',i)
         res = reduce(lambda x,y: [self.visit(y,x+c)] + x,ast.decl,[])
@@ -68,10 +73,9 @@ class StaticChecker(BaseVisitor,Utils):
         findMain = self.lookup("main",res,lambda x:x.name)
         if (findMain is None) or (not isinstance(findMain.mtype,MType)):
             raise NoEntryPoint()
-        elif not isinstance(findMain.mtype.rettype,VoidType):
-            raise NoEntryPoint()
-        elif findMain.mtype.partype:
-            raise NoEntryPoint();
+
+        if self.funDeclaredNotCalled:
+            raise UnreachableFunction(self.funDeclaredNotCalled[0])
 
         return res
 
@@ -79,25 +83,51 @@ class StaticChecker(BaseVisitor,Utils):
         symVar = Symbol(ast.variable, ast.varType)
         return self.checkRedeclared(symVar, Variable(), c)
 
-        
+    
+    def checkFuncNotVoidReturnEmpty(self,returnTypeFunc, returnTypeReturn):
+        if ( not type (returnTypeFunc) is VoidType) and (returnTypeReturn == []):
+            return True
+        else:
+            return False
+
     def visitFuncDecl(self,ast, c): 
+        self.curFunc = ast
+        if ast.name.name != 'main':
+            self.funDeclaredNotCalled.append(ast.name.name)
+
+        flag_return=0
+        flag_break=0
+        flag_continue=0
         symFunc = Symbol(ast.name.name,MType([x.varType for x in ast.param],ast.returnType))
         self.checkRedeclared(symFunc, Function(), c)
         listParaOfFunc  = reduce(lambda x,y:x + [self.checkRedeclared(Symbol(y.variable,y.varType),Parameter(),x)],ast.param,[])
-    
+        
         listVarInBody = []
+        listVarInBlock = listParaOfFunc
+
         for i in ast.body.member:
             if(type(i) is VarDecl):
                 listVarInBody.append(i)
-                listVarInBlock = reduce(lambda x,y:x+ [self.checkRedeclared(Symbol(y.variable,y.varType),Variable(),x)],listVarInBody,listParaOfFunc)      
-            
-        for i in ast.body.member:
-            if( not type(i) is VarDecl):
+                listVarInBlock =reduce(lambda x,y : x+ [self.checkRedeclared(Symbol(y.variable,y.varType),Variable(),x)],listVarInBody,listParaOfFunc)      
+            elif (type(i) is Return): 
+                if (not self.checkFuncNotVoidReturnEmpty(self.curFunc.returnType,i.expr)):
+                    flag_return += 1
+            elif (type(i) is Break):
+                flag_break += 1
+            elif (type(i) is Continue):  
+                flag_continue += 1
+            else:
                 self.visit(i,listVarInBlock + c)
-      
-            
 
-        return Symbol(ast.name.name,MType([x.varType for x in ast.param],ast.returnType))
+        if flag_return == 0:
+            raise FunctionNotReturn(ast.name.name)
+        if flag_break >= 1:
+            raise BreakNotInLoop()
+        if flag_continue>=1:
+            raise ContinueNotInLoop()
+        
+
+        return symFunc
 
     def visitBinaryOp(self,ast,c):
         left = self.visit(ast.left,c)
@@ -120,6 +150,12 @@ class StaticChecker(BaseVisitor,Utils):
             raise TypeMismatchInExpression(ast)
 
         elif (ast.op == "="):
+            print('left',ast.left)
+            print('right',ast.right)
+            
+            if(not type(ast.left) is Id) and (not type(ast.left) is ArrayCell):
+                raise NotLeftValue(ast.left)
+        
             if( type(left) is FloatType and type(right) is IntType or type(left) is FloatType and type(right) is FloatType):
                 return FloatType()
             elif(type(left) is IntType and type(right) is IntType):
@@ -165,10 +201,11 @@ class StaticChecker(BaseVisitor,Utils):
         
         elif len(res.mtype.partype) != len(at) or any(type(a)!=type(b) for a,b in zip(at,res.mtype.partype)):
             raise TypeMismatchInExpression(ast)
-        else:
-            return res.mtype.rettype
+        
+        self.funDeclaredNotCalled.remove(ast.method.name)
 
     def visitId(self,ast,c):
+    
         temp=self.lookup(ast.name,c,lambda x:x.name)
         if (temp is None) or type(temp.mtype) is MType:
             raise Undeclared(Identifier(),ast.name)
@@ -184,11 +221,97 @@ class StaticChecker(BaseVisitor,Utils):
     def visitStringLiteral(self,ast, c): 
         return StringType()
 
+    def visitBlock(self,ast,c):  
+        [self.visit(x,c) for x in ast.member]
 
     def visitIf(self,ast,c):
-        print('iffffffffffff',ast.expr)
-        self.printC(c)
-        condition = self.visit(ast.expr,c)
-        print('conditionnnnn',condition)
-        if not type(condition) is BoolType:
+        expr = self.visit(ast.expr,c)
+
+        if not type(expr) is BoolType:
             raise TypeMismatchInStatement(ast)
+        if ast.elseStmt:
+            elseStmt = self.visit(ast.elseStmt,c)
+            flag = 0;
+            for x in ast.elseStmt.member:
+                if (type(x) is Return): 
+                    if (not self.checkFuncNotVoidReturnEmpty(self.curFunc.returnType,x.expr)):  
+                        flag = 1
+                        break
+                elif (self.ok==0) and (type(x) is Break):
+                    raise BreakNotInLoop()
+                elif (self.ok==0) and (type(x) is Continue):
+                    raise ContinueNotInLoop()
+            if flag == 0:
+                raise FunctionNotReturn(self.curFunc.name.name)
+
+        if ast.thenStmt:
+            thenStmt = self.visit(ast.thenStmt,c)
+            flag = 0;
+            for x in ast.thenStmt.member:
+                if (type(x) is Return): 
+                    if (not self.checkFuncNotVoidReturnEmpty(self.curFunc.returnType,x.expr)):
+                        flag = 1
+                        break
+                elif (self.ok==0) and (type(x) is Break):
+                    raise BreakNotInLoop()
+                elif (self.ok==0) and (type(x) is Continue):
+                    raise ContinueNotInLoop()
+            if flag == 0:
+                raise FunctionNotReturn(self.curFunc.name.name)
+
+    def visitFor(self,ast,c):
+        self.ok=1
+        expr1 = self.visit(ast.expr1,c)
+        expr2 = self.visit(ast.expr2,c)
+        expr3 = self.visit(ast.expr3,c)
+
+        if ( type(expr1) is IntType and type(expr2) is BoolType and type(expr3) is IntType):
+            res=[self.visit(x,c) for x in ast.loop.member]
+        else:
+            raise TypeMismatchInStatement(ast)
+
+        self.ok=0
+    def visitDowhile(self,ast,c):
+        self.ok=1
+        exp = self.visit(ast.exp,c)
+        if not type(exp) is BoolType:
+            raise TypeMismatchInStatement(ast)
+        
+        self.ok==0
+    def checkMatchOfFuncAndReturnType(self,x,y):
+        if isinstance(x,IntType) and isinstance(y,IntType) :
+            return True
+        elif (isinstance(x,FloatType) and isinstance(y,FloatType)) or (isinstance(x,FloatType) and isinstance(y,IntType)) :
+            return True
+        elif isinstance(x,BoolType) and isinstance(y,BoolType):
+            return True
+        elif isinstance(x,StringType) and isinstance(y,StringType):
+            return True
+        elif (isinstance(x,ArrayType) and isinstance(y,ArrayType)) or (isinstance(x,ArrayPointerType) and isinstance(y,ArrayPointerType)) or (isinstance(x,ArrayPointerType) and isinstance(y,ArrayType)) :
+            if x.eleType == y.eleType:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def visitReturn(self,ast,c):
+       
+        funcType = self.curFunc.returnType
+        
+        if ast.expr:
+        
+            if type(funcType) is VoidType:
+                raise TypeMismatchInStatement(ast)
+            elif( (not type(funcType) is VoidType) and (not ast.expr)):
+                raise TypeMismatchInStatement(ast)
+            expr = self.visit(ast.expr,c)
+            if (not self.checkMatchOfFuncAndReturnType(funcType,expr)): 
+                raise TypeMismatchInStatement(ast)
+            
+    def visitBreak(self,ast,c):
+        return;
+    def visitContinue(self,ast,c):
+        return;
+    def visitArrayCell(self,ast,c):
+        return;

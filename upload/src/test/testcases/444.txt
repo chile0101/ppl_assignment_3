@@ -1,0 +1,8 @@
+
+        
+            int foo(){
+            int n;
+            n = n%12;
+            n = 123%1.1; // For error
+        }
+        

@@ -1,4 +1,6 @@
 
-                   void main(int x, float y){
+                   int foo(){
+
                    }
+
                 

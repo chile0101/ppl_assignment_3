@@ -1,1 +1,1 @@
-Type Mismatch In Expression: BinaryOp(=,Id(y),BinaryOp(-,BinaryOp(+,BinaryOp(/,IntLiteral(1),IntLiteral(32)),IntLiteral(123)),FloatLiteral(153.13)))
+Redeclared Variable: foo

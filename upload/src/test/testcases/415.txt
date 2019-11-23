@@ -1,0 +1,6 @@
+
+    
+        float foo(){
+            int z;
+            callFunc(z);
+        }

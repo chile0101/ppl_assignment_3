@@ -1,0 +1,8 @@
+
+        
+           int foo(){
+            boolean x ;
+            x = true && true && -123 == -123 && 1 == 1 && true == true;
+            x = false && "false" ; // For error
+        }
+        

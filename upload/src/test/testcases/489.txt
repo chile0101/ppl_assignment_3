@@ -1,0 +1,11 @@
+
+    
+            void main(int a[]){
+                int z;
+                if(true){
+                    z + 1 = 123;
+                    return;
+                }
+                return;
+            }
+        

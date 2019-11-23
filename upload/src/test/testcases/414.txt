@@ -1,0 +1,8 @@
+
+        int z;
+        float foo(){
+            int x;
+            x = z;
+            y = 1;
+            
+        }

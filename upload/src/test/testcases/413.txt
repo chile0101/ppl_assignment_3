@@ -1,0 +1,6 @@
+
+        int z;
+        float foo(){
+            z = 1;
+            x = z;  // for require
+        }

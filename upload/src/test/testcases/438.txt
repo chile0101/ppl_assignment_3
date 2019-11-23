@@ -1,0 +1,9 @@
+
+            int foo(){
+                boolean status;
+                status = 1 == 1;
+                status = true == true;
+                boolean bool;
+                bool = "str" == "str";  // For error
+            }
+        

@@ -1,0 +1,16 @@
+
+            void main(){
+                boolean have = true;
+                boolean checked;
+            
+                int sum ;
+                sum = 0;
+                if(have){
+                    sum = 1;
+                    checked = 123;  // For error type
+                }else{
+                    sum = 2;
+                }
+                sum = 3;
+            }
+        

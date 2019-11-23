@@ -1,0 +1,9 @@
+
+            void main(){
+                int var;
+                if(true){
+                    x = 1;
+                }else{}
+                
+            }
+        

@@ -1,0 +1,15 @@
+
+            int nobita(){
+                return 5;
+            }
+            int sasuke(int a){
+                return a;
+            }
+            void main(){
+                if(true){
+                    nobita();
+                    return;
+                }
+                return;
+            }
+        
