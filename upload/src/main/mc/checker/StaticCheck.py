@@ -45,14 +45,8 @@ class StaticChecker(BaseVisitor,Utils):
     funDeclaredNotCalled = []
     ok = 0
             
-    
     def __init__(self,ast):
         self.ast = ast
-
-    def printC(self,c):
-        for i in c:
-            print('ccccccccccccccc',i.name)
-
 
     def check(self):
         return self.visit(self.ast,StaticChecker.global_envi)
@@ -66,8 +60,6 @@ class StaticChecker(BaseVisitor,Utils):
     def visitProgram(self, ast, c): 
         self.funDeclaredNotCalled = []
 
-        for i in ast.decl:
-            print('>>>>> decl: ',i)
         res = reduce(lambda x,y: [self.visit(y,x+c)] + x,ast.decl,[])
 
         findMain = self.lookup("main",res,lambda x:x.name)
@@ -110,7 +102,9 @@ class StaticChecker(BaseVisitor,Utils):
                 listVarInBody.append(i)
                 listVarInBlock =reduce(lambda x,y : x+ [self.checkRedeclared(Symbol(y.variable,y.varType),Variable(),x)],listVarInBody,listParaOfFunc)      
             elif (type(i) is Return): 
+                
                 if (not self.checkFuncNotVoidReturnEmpty(self.curFunc.returnType,i.expr)):
+                    self.visit(i,listVarInBlock + c)
                     flag_return += 1
             elif (type(i) is Break):
                 flag_break += 1
@@ -118,9 +112,9 @@ class StaticChecker(BaseVisitor,Utils):
                 flag_continue += 1
             else:
                 self.visit(i,listVarInBlock + c)
-
-        if flag_return == 0:
-            raise FunctionNotReturn(ast.name.name)
+        if(not type( ast.returnType) is VoidType):
+            if flag_return == 0:
+                raise FunctionNotReturn(ast.name.name)
         if flag_break >= 1:
             raise BreakNotInLoop()
         if flag_continue>=1:
@@ -135,11 +129,13 @@ class StaticChecker(BaseVisitor,Utils):
 
     
         if (ast.op == "+" or ast.op == "-" or ast.op == "*" or ast.op == "/" ):
+            
             if (isinstance(left,IntType)) and (isinstance(right,IntType)):
                 return IntType()
             elif (isinstance(left,IntType)) and (isinstance(right,FloatType)) or (isinstance(left,FloatType)) and (isinstance(right,IntType)) or (isinstance(left,FloatType)) and (isinstance(right,FloatType)):
                 return FloatType()
-            raise TypeMismatchInExpression(ast)
+            else:
+                raise TypeMismatchInExpression(ast)
         elif (ast.op == "<" or ast.op == ">" or ast.op == "<=" or ast.op == ">=" ):
             if (isinstance(left,IntType)) and (isinstance(right,IntType)) or (isinstance(left,IntType)) and (isinstance(right,FloatType)) or (type(left) is FloatType()) and (isinstance(right,IntType)) or (type(left) is FloatType()) and (isinstance(right,FloatType)):
                 return BoolType()
@@ -150,9 +146,7 @@ class StaticChecker(BaseVisitor,Utils):
             raise TypeMismatchInExpression(ast)
 
         elif (ast.op == "="):
-            print('left',ast.left)
-            print('right',ast.right)
-            
+           
             if(not type(ast.left) is Id) and (not type(ast.left) is ArrayCell):
                 raise NotLeftValue(ast.left)
         
@@ -232,17 +226,18 @@ class StaticChecker(BaseVisitor,Utils):
         if ast.elseStmt:
             elseStmt = self.visit(ast.elseStmt,c)
             flag = 0;
-            for x in ast.elseStmt.member:
-                if (type(x) is Return): 
-                    if (not self.checkFuncNotVoidReturnEmpty(self.curFunc.returnType,x.expr)):  
-                        flag = 1
-                        break
-                elif (self.ok==0) and (type(x) is Break):
-                    raise BreakNotInLoop()
-                elif (self.ok==0) and (type(x) is Continue):
-                    raise ContinueNotInLoop()
-            if flag == 0:
-                raise FunctionNotReturn(self.curFunc.name.name)
+            if ast.elseStmt.member:
+                for x in ast.elseStmt.member:
+                    if (type(x) is Return): 
+                        if (not self.checkFuncNotVoidReturnEmpty(self.curFunc.returnType,x.expr)):  
+                            flag = 1
+                            break
+                    elif (self.ok==0) and (type(x) is Break):
+                        raise BreakNotInLoop()
+                    elif (self.ok==0) and (type(x) is Continue):
+                        raise ContinueNotInLoop()
+            # if flag == 0:
+            #     raise FunctionNotReturn(self.curFunc.name.name)
 
         if ast.thenStmt:
             thenStmt = self.visit(ast.thenStmt,c)
@@ -256,8 +251,8 @@ class StaticChecker(BaseVisitor,Utils):
                     raise BreakNotInLoop()
                 elif (self.ok==0) and (type(x) is Continue):
                     raise ContinueNotInLoop()
-            if flag == 0:
-                raise FunctionNotReturn(self.curFunc.name.name)
+            # if flag == 0:
+            #     raise FunctionNotReturn(self.curFunc.name.name)
 
     def visitFor(self,ast,c):
         self.ok=1
@@ -300,7 +295,6 @@ class StaticChecker(BaseVisitor,Utils):
         funcType = self.curFunc.returnType
         
         if ast.expr:
-        
             if type(funcType) is VoidType:
                 raise TypeMismatchInStatement(ast)
             elif( (not type(funcType) is VoidType) and (not ast.expr)):

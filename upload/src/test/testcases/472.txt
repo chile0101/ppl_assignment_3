@@ -10,10 +10,10 @@
                     x = 2;
                            // Missing return 
                 }
-                return x;
+               
             }
             void main(){
                foo("chi");
-               return;
+              
             }
         

@@ -1,5 +1,9 @@
 
-            void main(){
-               return 1;
-            }
+        
+        int foo(){
+            boolean x ;
+            x = 123 < 111 + 1;
+            float y;
+            y = -134 < true;  // For error
+        }
         

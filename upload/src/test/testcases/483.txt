@@ -1,12 +1,16 @@
 
-            int foo(int x){
-                x = 2;
-                return x;
-            }
-            string bar(){
-                return "chile";
-            }
             void main(){
+                int x,i;
+                x = 0;
+                i = 10;
+                continue;
+                do{
+                    x = x + i;
+                    continue;
+                }while(1 == 1);
+
                 return;
+                
+                
             }
         

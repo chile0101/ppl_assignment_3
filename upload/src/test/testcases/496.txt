@@ -1,0 +1,8 @@
+
+            void main(){
+                int a;
+                for(5;a || true;4){
+                    break;
+                }
+            }
+        

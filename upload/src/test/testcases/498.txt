@@ -1,0 +1,19 @@
+
+                void main(){}
+                int foo(boolean b1, string str1){
+                    int i;
+                    for (i = 1 ; true; i = i + 1){
+                        boolean b1;
+                        if(b1){
+                            return 1;
+                            break;
+                            {
+                                if(false){
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                         // Not return for error 
+                }
+        

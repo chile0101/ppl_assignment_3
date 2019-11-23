@@ -6,13 +6,13 @@
                 for (i;i<10;i =  i+1){
                     if(true){
                         bool = false;
-                        break;
-                        return 1; 
+                        break;         // CORRECT
+                        return 1;      // Bug
                     }
-                    break;
-                    return 1;
+                    break;             // CORRECT
+                    return 1;           // Bug
                 }
-                break;
+                break;   
                 return 1;
             }
             void main(){

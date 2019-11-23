@@ -1,15 +1,14 @@
 
-            int nobita(){
-                return 5;
+            int foo(int x){
+                x = 2;
+                return x;
             }
-            int sasuke(int a){
-                return a;
+            string bar(){
+                
+                return "chile";
             }
             void main(){
-                if(true){
-                    nobita();
-                    return;
-                }
+                foo(1);
                 return;
             }
         

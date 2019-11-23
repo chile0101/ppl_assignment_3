@@ -1,1 +1,1 @@
-Function foo2 Not Return 
+Undeclared Identifier: status

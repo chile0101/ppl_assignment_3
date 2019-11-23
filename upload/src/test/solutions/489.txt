@@ -1,1 +1,1 @@
-Not Left Value: BinaryOp(+,Id(z),IntLiteral(1))
+Type Mismatch In Expression: BinaryOp(=,ArrayCell(Id(d),IntLiteral(0)),IntLiteral(0))

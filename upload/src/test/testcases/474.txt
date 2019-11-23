@@ -1,0 +1,16 @@
+
+            int foo2(){
+            int i;
+            for( i = 0; i < 2;i = i + 1){
+                    return 0;
+                }
+            return 1;   // For error
+            }
+            int foo(){
+
+            }
+            void main(){
+               foo2();
+               foo();
+            }
+        

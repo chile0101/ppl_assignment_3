@@ -1,1 +1,1 @@
-Unreachable Function: foobar
+Unreachable Function: foo

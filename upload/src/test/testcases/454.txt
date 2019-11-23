@@ -1,8 +1,7 @@
 
             void main(){
-            
-                if(have){}else{
-                    sum = 123;
-                }
+               for(5;"test";5){
+                   foo();
+               }
             }
         

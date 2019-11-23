@@ -1,16 +1,12 @@
 
-            int bar(int a){
-                return 1;
+            int foo(int x){
+                x = 2;
+                return x;
             }
-            int foo(){
-                bar(1);
-                return 1;
-            }
-            int foobar(boolean x){   // For error
-                return true;
+            string bar(){
+                return "chile";
             }
             void main(){
-                foo();
                 return;
             }
         

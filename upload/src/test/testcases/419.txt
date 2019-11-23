@@ -1,6 +1,6 @@
 
-        void main(int x){
+        void main(){
             x = 1;
-            y = x // For error
+            int x;
         }
         

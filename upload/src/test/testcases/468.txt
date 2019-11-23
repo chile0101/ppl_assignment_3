@@ -1,10 +1,14 @@
 
-           
-            int foo(string str){
-                return;
+            boolean foo(string str,float f){
+                boolean result;
+                result = true; 
+                return 1 == 1;
+            }
+            int foo1(int x, string str){
+                return str;
             }
             void main(){
-               foo("chi");
+               foo("chi",1.5);
                return ;
             }
         

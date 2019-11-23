@@ -1,0 +1,11 @@
+
+            void main(){
+                int var;
+                if(true){
+                    //foo();
+                }else{
+                    foo()
+                }
+                
+            }
+        

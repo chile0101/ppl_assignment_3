@@ -1,1 +1,1 @@
-Not Left Value: IntLiteral(3)
+Unreachable Function: sasuke

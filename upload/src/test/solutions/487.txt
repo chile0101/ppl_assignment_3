@@ -1,1 +1,1 @@
-Not Left Value: BinaryOp(+,Id(z),IntLiteral(1))
+Unreachable Function: foobar

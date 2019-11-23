@@ -1,7 +1,6 @@
 
-            void main(){
-               for(4;5>6;false){
-                   foo();
-               }
-            }
+        void main(){
+           int x;
+           x = 123 * 12 + 15 - 67/14.2;
         
+        }

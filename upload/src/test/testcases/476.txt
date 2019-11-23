@@ -1,11 +1,16 @@
 
-            int nobita1(){
-                return 5;
+            int foo2(){
+                do{
+                    return 5;
+                }
+                while(5<3);
             }
-            int sasuke(int a){
-                return sasuke(5);
+            int foo(){
+                
             }
             void main(){
-                
+               foo2();
+               foo();
+              return;
             }
         

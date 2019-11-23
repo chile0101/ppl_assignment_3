@@ -1,11 +1,16 @@
 
-    
-            void main(int a[]){
-                int z;
-                //3 = z + 1;
-                z + 1 = 2;
-                //int d[3] ;
-                //d[0] = 0 ; 
+            int bar(int a){
+                return 1;
+            }
+            int foo(){
+                bar(1);
+                return 1;
+            }
+            int foobar(boolean x){   // For error
+                return 1;
+            }
+            void main(){
+                foo();
                 return;
             }
         

@@ -1,0 +1,18 @@
+
+                    int[] foo (int b []){
+                        int a[1] ;
+                        if (1 + 1 == 2) {
+                            return a ; //CORRECT
+                        }
+                            
+                        else {
+                            return 1 ; //CORRECT
+                        }
+                           
+                    }
+                    void main(){
+                        int arr[];
+                       foo(arr); // CORRECT
+                        return;
+                    }
+        

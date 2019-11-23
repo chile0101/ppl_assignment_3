@@ -1,13 +1,13 @@
 
             void main(){
-                int x,i;
+                int x;
                 x = 0;
-                i = 10;
-
-                do{
-                    x = x + i;
+                int i;
+                for( i = 0; i < 2;i = i + 1){
+                    x = x + 1;   
                     break;
-                }while(1 == 1)
+                }
+                break;
 
                 return;
                 

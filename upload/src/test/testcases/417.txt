@@ -1,5 +1,7 @@
 
-        int callFunc(int x){}
+        int callFunc(int x){
+            return x;
+        }
         int x;
         float foo(){
             int y;

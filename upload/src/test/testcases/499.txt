@@ -1,0 +1,12 @@
+
+            int foo1(int a,float c){
+               return 5;
+
+            }
+            float foo1(int b){
+                return 5;
+            }
+            void main(){
+                foo1(5);
+            }
+        

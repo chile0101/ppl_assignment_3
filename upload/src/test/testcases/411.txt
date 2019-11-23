@@ -2,9 +2,11 @@
         int x;
         float foo(){
             int x;
+            return x;
         }
         float foo1(){
             int x;
+            return x;
         }
         int x;  // for require
         

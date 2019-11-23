@@ -1,5 +1,4 @@
 
-        int callFunc(int x){}
         float foo(){
            int x;
            x = 1 + 1;

@@ -1,15 +1,11 @@
 
-            int foo2(){
-                do{
-                    return 5;
-                }
-                while(5<3);
-            }
-            int foo(){
-                
-            }
             void main(){
-               foo2();
-               foo();
+                int var;
+                if(true){
+                    //foo();
+                }else{
+                    status = true;
+                }
+                
             }
         
