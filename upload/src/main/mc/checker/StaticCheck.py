@@ -1,7 +1,6 @@
-
 """
  * @author : Le Van Chi 
- MSSV      : 1510289
+ * @MSSV   : 1510289
 """
 from AST import * 
 from Visitor import *
